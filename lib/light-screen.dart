@@ -33,6 +33,7 @@ class _LightScreenState extends State<LightScreen> {
   }
 
   colorInt(int v, snapshot) {
+    if(!running) return 0;
     return ((snapshot.data ?? 0.0) * v).round();
   }
 
