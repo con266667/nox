@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'light-level.dart';
 import 'light-screen.dart';
 
 void main() {
@@ -31,30 +33,40 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LightScreen())),
-          child: Container(
-            child: Card(
-              elevation: 0,
-              child: Container(
-                width: 150,
-                height: 40,
-                child: Center(child: Text('Start', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),))
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)
-              ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            MaterialButton(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LightScreen())),
+              child: Text('Start', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18, color: Colors.blueAccent)),
             ),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 200,
-                  spreadRadius: 0.5
-                )
-              ]
+            Container(height: 5),
+           Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text('Slow'),
+                Expanded(
+                  child: CupertinoSlider(
+                      value: LightLevel.speed, 
+                      onChanged: (v) => setState(() => LightLevel.speed = v),
+                      divisions: 6,
+                  ),
+                ),
+                Text('Fast')
+              ],
             ),
-          ),
+            Container(height: 15),
+            Container(
+              height: 50,
+              child: CupertinoTimerPicker(
+                initialTimerDuration: Duration(minutes: 30),
+                onTimerDurationChanged: (v) => setState(() => LightLevel.timeout = v),
+              ),
+            )
+          ],
         ),
       )
     );
