@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wakelock/wakelock.dart';
 import 'light-level.dart';
 
 class LightScreen extends StatefulWidget {
@@ -19,8 +20,16 @@ class _LightScreenState extends State<LightScreen> {
   }
 
   go() async {
+    Wakelock.enable();
     await LightLevel.startTimer();
     setState(() => running = false);
+    Wakelock.disable();
+  }
+
+  @override
+  void dispose() {
+    Wakelock.disable();
+    super.dispose();
   }
 
   @override
