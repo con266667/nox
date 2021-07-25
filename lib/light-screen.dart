@@ -22,7 +22,7 @@ class _LightScreenState extends State<LightScreen> {
   go() async {
     Wakelock.enable();
     await LightLevel.startTimer();
-    setState(() => running = false);
+    if(mounted) setState(() => running = false);
     Wakelock.disable();
   }
 
@@ -32,15 +32,30 @@ class _LightScreenState extends State<LightScreen> {
     super.dispose();
   }
 
+  colorInt(int v, snapshot) {
+    return ((snapshot.data ?? 0.0) * v).round();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: StreamBuilder(
         stream: LightLevel.stream,
-        builder: (context, snapshot) {
+        builder: (context, snp) {
           return Container(
-            color: running ? Color.fromRGBO(150, 190, 255, snapshot.data ?? 0.0) : Colors.black,
+            //color: running ? Color.fromRGBO(150, 190, 255, snapshot.data ?? 0.0) : Colors.black,
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                radius: 2.0,
+                //stops: [0.4, 1.0],
+                colors: [
+                  Color.fromRGBO(colorInt(150, snp), colorInt(190, snp), colorInt(255, snp), 1.0),
+                  //Color.fromRGBO(150, 190, 255, 1.0),
+                  Colors.black
+                ]
+              )
+            ),
           );
         },
       )
