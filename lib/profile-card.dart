@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'edit-profile.dart';
 import 'settings.dart';
 import 'profile.dart';
 
@@ -36,10 +37,14 @@ class ProfileCard extends StatelessWidget {
                   ],
                 ),
                 Spacer(),
-                // GestureDetector(
-                //   child: SvgPicture.asset('assets/icons/settings.svg', color: Colors.white)
-                // ),
-                // Container(width: 20),
+                Visibility(
+                  visible: profile.title == 'Default',
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfile(profile: profile))),
+                    child: SvgPicture.asset('assets/icons/settings.svg', color: Colors.white)
+                  ),
+                ),
+                Container(width: 20),
               ],
             ),
           ),

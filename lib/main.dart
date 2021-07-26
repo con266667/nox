@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
           headline1: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 43,
+            color: Colors.white
           ),
           subtitle1: TextStyle(
             fontWeight: FontWeight.w600,
@@ -50,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     Settings.controller.add(update);
+    Settings.getDefault();
     super.initState();
   }
 
