@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
+import 'settings.dart';
 import 'light-level.dart';
 
 class LightScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _LightScreenState extends State<LightScreen> {
                 radius: 2.0,
                 //stops: [0.4, 1.0],
                 colors: [
-                  Color.fromRGBO(colorInt(150, snp), colorInt(190, snp), colorInt(255, snp), 1.0),
+                  Color.fromRGBO(colorInt(Settings.selectedProfile.color.red, snp), colorInt(Settings.selectedProfile.color.green, snp), colorInt(Settings.selectedProfile.color.blue, snp), 1.0),
                   //Color.fromRGBO(150, 190, 255, 1.0),
                   Colors.black
                 ]
