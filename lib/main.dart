@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'settings.dart';
 import 'profile-picker.dart';
-import 'light-level.dart';
+import 'help.dart';
 import 'light-screen.dart';
 
 void main() {
@@ -100,7 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LightScreen())),
                 child: Text('Start', style: Theme.of(context).textTheme.headline1.copyWith(color: CupertinoColors.activeBlue))
               ),
-              Text('Help', style: Theme.of(context).textTheme.subtitle2),
+              GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Help())),
+                child: Text('Help', style: Theme.of(context).textTheme.subtitle2)
+              ),
             ],
           ),
         ),
