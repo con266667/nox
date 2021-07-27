@@ -18,7 +18,12 @@ class Settings extends Controller {
     ..title = 'Deep Sleep'
     ..color = Colors.deepPurple
     ..timeout = Duration(hours: 1)
-    ..speed = 0.3
+    ..speed = 0.3,
+    Profile()
+    ..title = 'Sunny'
+    ..color = Colors.yellow
+    ..timeout = Duration(minutes: 30)
+    ..speed = 0.65
   ];
   static Profile get selectedProfile => _selectedProfile;
   static set selectedProfile (v) {

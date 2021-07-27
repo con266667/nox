@@ -73,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProfilePicker())),
                 child: Card(
                   elevation: 0,
+                  margin: EdgeInsets.only(top: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)
                   ),
@@ -102,7 +103,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               GestureDetector(
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Help())),
-                child: Text('Help', style: Theme.of(context).textTheme.subtitle2)
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text('Help', style: Theme.of(context).textTheme.subtitle2),
+                )
               ),
             ],
           ),
