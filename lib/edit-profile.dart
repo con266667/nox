@@ -63,9 +63,9 @@ class _EditProfileState extends State<EditProfile> {
                   Text('Slow'),
                   Expanded(
                     child: CupertinoSlider(
-                        value: widget.profile.speed, 
+                        value: widget.profile.speed.inMilliseconds.toDouble(), 
                         onChanged: (v) {
-                          Settings.profiles.firstWhere((e) => e.title == widget.profile.title).speed = v;
+                          Settings.profiles.firstWhere((e) => e.title == widget.profile.title).speed = Duration(milliseconds: v.toInt());
                           Settings.saveDefault();
                         },
                         divisions: 6,

@@ -1,4 +1,4 @@
-package com.example.rest
+package org.connorw.nox
 
 import io.flutter.embedding.android.FlutterActivity
 
