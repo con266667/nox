@@ -13,48 +13,92 @@ class Settings extends Controller {
     Profile()
     ..title = 'Summer Night'
     ..color = Colors.deepOrange
-    ..timeout = Duration(minutes: 45),
+    ..timeout = Duration(minutes: 45)
+    ..editable = [Editable.timeout, Editable.speed],
     Profile()
     ..title = 'Deep Sleep'
     ..color = Colors.deepPurple
     ..timeout = Duration(hours: 1)
-    ..speed = Duration(seconds: 12),
-    Profile()
-    ..title = 'Sunny'
-    ..color = Colors.yellow
-    ..timeout = Duration(minutes: 30)
-    ..speed = Duration(seconds: 10),
+    ..speed = Duration(seconds: 12)
+    ..editable = [Editable.timeout],
     Profile()
     ..title = '4-7-8'
     ..timeout = Duration(minutes: 20)
     ..speed = Duration(seconds: 19)
     ..map = [0, 0.33, 0.66, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.875, 0.75, 0.625, 0.5, 0.325, 0.125, 0]
+    ..editable = [Editable.timeout, Editable.color]
   ];
+
+  static List<Profile> get profilesbackup => [
+    _default,
+    Profile()
+    ..title = 'Summer Night'
+    ..color = Colors.deepOrange
+    ..timeout = Duration(minutes: 45)
+    ..editable = [Editable.timeout, Editable.speed],
+    Profile()
+    ..title = 'Deep Sleep'
+    ..color = Colors.deepPurple
+    ..timeout = Duration(hours: 1)
+    ..speed = Duration(seconds: 12)
+    ..editable = [Editable.timeout],
+    Profile()
+    ..title = '4-7-8'
+    ..timeout = Duration(minutes: 20)
+    ..speed = Duration(seconds: 19)
+    ..map = [0, 0.33, 0.66, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.875, 0.75, 0.625, 0.5, 0.325, 0.125, 0]
+    ..editable = [Editable.timeout, Editable.color]
+  ];
+
   static Profile get selectedProfile => _selectedProfile;
   static set selectedProfile (v) {
     _selectedProfile = v;
+    saveSelected();
     controller.notify();
   }
 
-  static saveDefault() async {
+  static Profile profile(String namestr) => profiles.firstWhere((e) => e.title.toLowerCase().replaceAll(' ', '') == namestr);
+
+  static saveSelected() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('defaultTitle', _default.title);
-    prefs.setInt('defaultColorR', _default.color.red);
-    prefs.setInt('defaultColorG', _default.color.green);
-    prefs.setInt('defaultColorB', _default.color.blue);
-    prefs.setInt('defaultTimeout', _default.timeout.inSeconds);
-    prefs.setInt('defaultSpeedMS', _default.speed.inMilliseconds);
+    prefs.setString('selectedProfile', _selectedProfile.title);
+  }
+
+  static saveAll() {
+    profiles.forEach((e) => saveProfile(e.title));
+  }
+
+  static saveProfile(String name) async {
+    String newname = name.toLowerCase().replaceAll(' ', '');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //prefs.setString('${newname}Title', _default.title);
+    prefs.setInt('${newname}ColorR', profile(newname).color.red);
+    prefs.setInt('${newname}ColorG', profile(newname).color.green);
+    prefs.setInt('${newname}ColorB', profile(newname).color.blue);
+    prefs.setInt('${newname}Timeout', profile(newname).timeout.inSeconds);
+    prefs.setInt('${newname}SpeedMS', profile(newname).speed.inMilliseconds);
     controller.notify();
   }
 
-  static getDefault() async {
+  static getAll() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _default.title = prefs.getString('defaultTitle') ?? _default.title;
-    _default.color = Color.fromRGBO(prefs.getInt('defaultColorR') ?? _default.color.red, prefs.getInt('defaultColorG') ?? _default.color.green, prefs.getInt('defaultColorB') ?? _default.color.blue, 1.0);
-    _default.timeout = Duration(seconds: prefs.getInt('defaultTimeout') ?? _default.timeout.inSeconds);
-    _default.speed = Duration(milliseconds: prefs.getInt('defaultTimeoutMS') ?? _default.speed.inMilliseconds);
-    profiles.first = _default;
-    if(selectedProfile.title == 'Default') _selectedProfile = _default;
+    selectedProfile = profiles.firstWhere((e) => e.title == (prefs.getString('selectedProfile') ?? profiles.first));
+    profiles.forEach((e) => getProfile(e.title));
+  }
+
+  static getProfile(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String newname = name.toLowerCase().replaceAll(' ', '');
+    profile(newname).color = Color.fromRGBO(prefs.getInt('${newname}ColorR') ?? profile(newname).color.red, prefs.getInt('${newname}ColorG') ?? profile(newname).color.green, prefs.getInt('${newname}ColorB') ?? profile(newname).color.blue, 1.0);
+    profile(newname).timeout = Duration(seconds: prefs.getInt('${newname}Timeout') ?? profile(newname).timeout.inSeconds);
+    profile(newname).speed = Duration(milliseconds: prefs.getInt('${newname}SpeedMS') ?? profile(newname).speed.inMilliseconds);
+    if(selectedProfile.title == name) _selectedProfile = profile(newname);
+    controller.notify();
+  }
+
+  static reset(String name) {
+    profiles[profiles.indexWhere((e) => e.title == name)] = profilesbackup.firstWhere((e) => e.title == name);
+    saveProfile(name);
     controller.notify();
   }
 }

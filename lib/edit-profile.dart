@@ -19,7 +19,8 @@ class _EditProfileState extends State<EditProfile> {
     Colors.deepPurple,
     Colors.pink,
     Color.fromRGBO(10, 200, 5, 1),
-    Colors.redAccent
+    Colors.redAccent,
+    Colors.yellow
   ];
 
   @override
@@ -55,66 +56,102 @@ class _EditProfileState extends State<EditProfile> {
                   Text(widget.profile.title, style: Theme.of(context).textTheme.headline1),
                 ],
               ),
-              Container(height: 30),
-              Text('Breathing Speed', style: Theme.of(context).textTheme.subtitle1),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('Slow'),
-                  Expanded(
-                    child: CupertinoSlider(
-                        value: widget.profile.speed.inMilliseconds.toDouble(), 
-                        onChanged: (v) {
-                          Settings.profiles.firstWhere((e) => e.title == widget.profile.title).speed = Duration(milliseconds: v.toInt());
-                          Settings.saveDefault();
-                        },
-                        divisions: 6,
+              Visibility(
+                visible: widget.profile.editable.contains(Editable.speed),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(height: 30),
+                    Text('Cycle Length', style: Theme.of(context).textTheme.subtitle1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text('5s'),
+                        Expanded(
+                          child: CupertinoSlider(
+                            min: 5000,
+                            max: widget.profile.speed.inMilliseconds > 15000 ? widget.profile.speed.inMilliseconds.toDouble() : 15000.0,
+                            value: widget.profile.speed.inMilliseconds.toDouble(), 
+                            onChanged: (v) {
+                              Settings.profiles.firstWhere((e) => e.title == widget.profile.title).speed = Duration(milliseconds: v.toInt());
+                              Settings.saveProfile(widget.profile.title);
+                            },
+                            //divisions: 6,
+                          ),
+                        ),
+                        Text('15s')
+                      ],
                     ),
-                  ),
-                  Text('Fast')
-                ],
-              ),
-              Container(height: 15),
-              Text('Timeout', style: Theme.of(context).textTheme.subtitle1),
-              Container(height: 5),
-              Container(
-                height: 40,
-                child: CupertinoTimerPicker(
-                  initialTimerDuration: widget.profile.timeout,
-                  onTimerDurationChanged: (v) {
-                    Settings.profiles.firstWhere((e) => e.title == widget.profile.title).timeout = v;
-                    Settings.saveDefault();
-                  }
+                  ],
                 ),
               ),
-              Container(height: 20),
-              Text('Color', style: Theme.of(context).textTheme.subtitle1),
-              Container(height: 8),
-              Row(
-                children: colors.map((e) => 
-                  GestureDetector(
-                    onTap: () {
-                      Settings.profiles.firstWhere((e) => e.title == widget.profile.title).color = e;
-                      Settings.saveDefault();
-                    },
-                    child: Card(
-                      color: e,
-                      elevation: colorsAreEqual(widget.profile.color, e) ? 0 : 10,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: colorsAreEqual(widget.profile.color, e) ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2
-                          )
-                        ) : null
+              Visibility(
+                visible: widget.profile.editable.contains(Editable.timeout),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(height: 15),
+                    Text('Timeout', style: Theme.of(context).textTheme.subtitle1),
+                    Container(height: 5),
+                    Container(
+                      height: 40,
+                      child: CupertinoTimerPicker(
+                        initialTimerDuration: widget.profile.timeout,
+                        onTimerDurationChanged: (v) {
+                          Settings.profiles.firstWhere((e) => e.title == widget.profile.title).timeout = v;
+                          Settings.saveProfile(widget.profile.title);
+                        }
                       ),
-                      margin: EdgeInsets.only(right: 8),
                     ),
-                  )
-                ).toList()
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: widget.profile.editable.contains(Editable.color),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(height: 20),
+                    Text('Color', style: Theme.of(context).textTheme.subtitle1),
+                    Container(height: 8),
+                    Row(
+                      children: colors.map((e) => 
+                        GestureDetector(
+                          onTap: () {
+                            Settings.profiles.firstWhere((e) => e.title == widget.profile.title).color = e;
+                            Settings.saveProfile(widget.profile.title);
+                          },
+                          child: Card(
+                            color: e,
+                            elevation: colorsAreEqual(widget.profile.color, e) ? 0 : 10,
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: colorsAreEqual(widget.profile.color, e) ? BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2
+                                )
+                              ) : null
+                            ),
+                            margin: EdgeInsets.only(right: 8),
+                          ),
+                        )
+                      ).toList()
+                    )
+                  ],
+                ),
+              ),
+              Container(height: 10),
+              Center(
+                child: MaterialButton(
+                  onPressed: () {
+                    Settings.reset(widget.profile.title);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Reset", style: Theme.of(context).textTheme.subtitle2)
+                )
               )
             ]
           ),

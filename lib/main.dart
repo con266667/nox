@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     Settings.controller.add(update);
-    Settings.getDefault();
+    Settings.getAll();
     super.initState();
   }
 

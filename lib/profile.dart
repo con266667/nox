@@ -6,4 +6,11 @@ class Profile {
   Duration timeout = Duration(minutes: 30);
   List<double> map = [];
   Duration speed = Duration(seconds: 12);
+  List<Editable> editable = [Editable.color, Editable.speed, Editable.timeout];
+}
+
+enum Editable {
+  color,
+  timeout,
+  speed
 }

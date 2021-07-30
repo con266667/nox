@@ -38,7 +38,7 @@ class ProfileCard extends StatelessWidget {
                 ),
                 Spacer(),
                 Visibility(
-                  visible: profile.title == 'Default',
+                  visible: profile.editable.isNotEmpty,
                   child: GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => EditProfile(profile: profile))),
                     child: SvgPicture.asset('assets/icons/settings.svg', color: Colors.white)
